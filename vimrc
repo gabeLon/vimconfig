@@ -13,11 +13,12 @@ let g:ctrlp_max_depth=40
 scriptencoding utf-8								"Resolve strange characters on NerdTree.
 set encoding=utf-8								"Resolve strange characters on NerdTree.
 set noerrorbells visualbell t_vb= 						"No damm bells!
-set encoding=utf-8								"Support UTF-8		
+set encoding=utf-8								"Support UTF-8
 set showmatch
 inoremap <C-e> <C-o>$
 inoremap <C-a> <C-o>0
-autocmd BufWritePost *.py call Flake8()
+"autocmd BufWritePost *.py call Flake8()
+autocmd BufWritePre * :%s/\s\+$//e						"Avoid leaving trailing spaces (python PEP8).
 
 "------------Visuals---------------"
 set number									"Activate line numbers.
@@ -54,9 +55,9 @@ inoremap jj <ESC>
 
 "-----------Auto-Comands----------"
 "Automatically source the Vimrc file on save
-augroup autosourcing							
-	autocmd!							
-	autocmd BufWritePost vimrc source %				
+augroup autosourcing
+	autocmd!
+	autocmd BufWritePost vimrc source %
 augroup END
 
 "------PDV - PHP Documentator-----"
