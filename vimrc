@@ -93,7 +93,7 @@ let g:jedi#completions_command = ""
 let g:jedi#show_call_signatures = "1"
 let g:jedi#show_call_signatures_delay = 0
 let g:jedi#use_tabs_not_buffers = 0
-let g:jedi#show_call_signatures_modes = 'i'  " ni = also in normal mode
+let g:jedi#show_call_signatures_modes = 'i'  " ni = also in normal mode xxx
 let g:jedi#enable_speed_debugging=0
 
 "Start of Vim-plug manager
