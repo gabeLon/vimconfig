@@ -30,6 +30,7 @@ set guioptions-=l
 set guioptions-=L
 set guioptions-=r
 set guioptions-=R
+set wrap!
 
 "------------Search----------------"
 set hlsearch
@@ -74,6 +75,27 @@ let g:UltiSnipsSnippetsDir = "~/.vim/ultisnips"
 "Use these directories for searching snippets, comma separated
 let g:UltiSnipsSnippetDirectories=["~/.vim/plugged/vim-snippets/UltiSnips"]
 
+" ncm2 settings
+autocmd BufEnter * call ncm2#enable_for_buffer()
+set completeopt=menuone,noselect,noinsert
+" make it FAST
+let ncm2#popup_delay = 5
+let ncm2#complete_length = [[1,1]]
+let g:ncm2#matcher = 'substrfuzzy'
+
+" jedi options
+let g:jedi#auto_initialization = 1
+let g:jedi#completions_enabled = 0
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#smart_auto_mappings = 0
+let g:jedi#popup_on_dot = 0
+let g:jedi#completions_command = ""
+let g:jedi#show_call_signatures = "1"
+let g:jedi#show_call_signatures_delay = 0
+let g:jedi#use_tabs_not_buffers = 0
+let g:jedi#show_call_signatures_modes = 'i'  " ni = also in normal mode
+let g:jedi#enable_speed_debugging=0
+
 "Start of Vim-plug manager
 call plug#begin()
 	Plug 'tpope/vim-vinegar'
@@ -85,10 +107,14 @@ call plug#begin()
 	Plug 'tobyS/pdv'
 	Plug 'honza/vim-snippets'
 	Plug 'tpope/vim-surround'
-	Plug 'Valloric/YouCompleteMe'
 	Plug 'jiangmiao/auto-pairs'
 	Plug 'davidhalter/jedi-vim'
 	Plug 'scrooloose/syntastic'
 	Plug 'nvie/vim-flake8'
+	Plug 'roxma/nvim-yarp'  						"dependency of ncm2
+	Plug 'ncm2/ncm2' 							"awesome autocomplete plugin
+	Plug 'HansPinckaers/ncm2-jedi' 						"fast python completion (use ncm2 if you want type info or snippet support)
+	Plug 'ncm2/ncm2-bufword' 						"buffer keyword completion
+	Plug 'ncm2/ncm2-path'  							"filepath completion
 call plug#end()
 "End Vim-plug manager
