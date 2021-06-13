@@ -1,120 +1,227 @@
-set nocompatible								"We want the latest Vim settings/options.
-syntax enable
-set path+=**        								"Search down into subfolders. Use it with :find yourfile.
-set wildmenu  									"Display all matching files when tab complete.
-let mapleader=" "								"The default leader is \ but space is better for me.
-let NERDTreeHijackNetrw = 0							"Avoids NerdTree to hijack Netrw (and Vinegar) functionality.
-let g:NERDTreeChDirMode       = 2						"make CtrlP's search directory change according to NerdTree's root.
-"let g:ctrlp_working_path_mode = 'rw'						"make CtrlP's search directory change according to NerdTree's root.
-set backspace=indent,eol,start 							"Make backspace behave like every other editor.
-"let g:netrw_localrmdir='rm -r'							"Alloud remove non empty directories or folders.
-let g:ctrlp_max_files=0
-let g:ctrlp_max_depth=40
-scriptencoding utf-8								"Resolve strange characters on NerdTree.
-set encoding=utf-8								"Resolve strange characters on NerdTree.
-set noerrorbells visualbell t_vb= 						"No damm bells!
-set encoding=utf-8								"Support UTF-8
-set showmatch
-inoremap <C-e> <C-o>$
-inoremap <C-a> <C-o>0
-"autocmd BufWritePost *.py call Flake8()
-autocmd BufWritePre * :%s/\s\+$//e						"Avoid leaving trailing spaces (python PEP8).
+"plugins
+let need_to_install_plugins = 0
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    let need_to_install_plugins = 1
+endif
 
-"------------Visuals---------------"
-set number									"Activate line numbers.
-set linespace=12								"Set interline separation.
-colorscheme atom-dark-256
-set t_CO=256
-set guifont=Fira_Code:h15							"This just works with macvim.
-set guioptions-=l
-set guioptions-=L
-set guioptions-=r
-set guioptions-=R
-set wrap!
+call plug#begin()
+Plug 'tpope/vim-sensible'
+Plug 'itchyny/lightline.vim'
+Plug 'joshdick/onedark.vim'
+Plug 'ap/vim-buftabline'
+Plug 'airblade/vim-gitgutter'
+Plug 'preservim/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'jiangmiao/auto-pairs'
+Plug 'dense-analysis/ale'
+Plug 'majutsushi/tagbar'
+Plug 'vim-scripts/indentpython.vim'
+Plug 'lepture/vim-jinja'
+Plug 'pangloss/vim-javascript'
+Plug 'alvan/vim-closetag'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'tpope/vim-surround'
+call plug#end()
 
-"------------Search----------------"
+filetype plugin indent on
+syntax on
+
+if need_to_install_plugins == 1
+    echo "Installing plugins..."
+    silent! PlugInstall
+    echo "Done!"
+    q
+endif
+
+" The default leader is \ but space is better for me.
+let mapleader=" "
+
+" No damm bells!
+set noerrorbells visualbell t_vb=
+
+" mappings"
+nmap <leader>ev :tabedit ~/.vim/vimrc<cr>
+nmap <leader>tc :tabc<cr>
+nmap <leader><space> :nohlsearch<cr>		
+nmap <leader>tn :tab new<cr>
+nmap <leader>tt :tabn<cr>
+inoremap jj <ESC>
+
+" search
 set hlsearch
 set incsearch
 
-"----------Split Management--------"
-set splitbelow
-set splitright
-nnoremap <C-J> <C-W><C-J>							"Move the split below.
-nnoremap <C-K> <C-W><C-K>							"Move the split above.
-nnoremap <C-L> <C-W><C-L>							"Move the split right.
-nnoremap <C-H> <C-W><C-H>							"Move the split left.
+" always show the status bar
+set laststatus=2
 
-"------------Mappings--------------"
-nmap <leader>ev :tabedit ~/.vim/vimrc<cr>					"Makes it easy to to edit the Vimrc file.
-nmap <leader>tc :tabc<cr>							"Close the open tag.
-nmap <leader>nt :NERDTreeToggle<cr> 						"Opens Nerd Tree.
-nmap <leader><space> :nohlsearch<cr>						"Adds simple highlight removal.
-nmap <leader>tn :tab new<cr>							"Creates a new tab.
-nmap <leader>tt :tabn<cr>							"Switch between open tabs.
-nmap <leader>honza :tabedit ~/.vim/plugged/vim-snippets/UltiSnips<cr>
-inoremap jj <ESC>
+" enable 256 colors
+set t_Co=256
+set t_ut=
 
-"-----------Auto-Comands----------"
-"Automatically source the Vimrc file on save
-augroup autosourcing
-	autocmd!
-	autocmd BufWritePost vimrc source %
-augroup END
+" turn on line numbering
+set number
 
-"------PDV - PHP Documentator-----"
-let g:pdv_template_dir = $HOME ."/.vim/plugged/pdv/templates_snip"
-nnoremap <leader>d :call pdv#DocumentWithSnip()<CR>
+" sane text files
+set fileformat=unix
+set encoding=utf-8
+set fileencoding=utf-8
 
-"-----Ultisnips------------------"
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-"Searches first on this directory for personal custom snippets. Do not put
-"this directory on UltiSnipsSnippetDirectories
-let g:UltiSnipsSnippetsDir = "~/.vim/ultisnips"
-"Use these directories for searching snippets, comma separated
-let g:UltiSnipsSnippetDirectories=["~/.vim/plugged/vim-snippets/UltiSnips"]
+" sane editing
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set colorcolumn=80
+set expandtab
+set viminfo='25,\"50,n~/.viminfo
+autocmd FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2
+autocmd FileType css setlocal tabstop=2 shiftwidth=2 softtabstop=2
+autocmd FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2
 
-" ncm2 settings
-autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=menuone,noselect,noinsert
-" make it FAST
-let ncm2#popup_delay = 5
-let ncm2#complete_length = [[1,1]]
-let g:ncm2#matcher = 'substrfuzzy'
+" auto-pairs
+au FileType python let b:AutoPairs = AutoPairsDefine({"f'" : "'", "r'" : "'", "b'" : "'"})
 
-" jedi options
-let g:jedi#auto_initialization = 1
-let g:jedi#completions_enabled = 0
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#smart_auto_mappings = 0
-let g:jedi#popup_on_dot = 0
-let g:jedi#completions_command = ""
-let g:jedi#show_call_signatures = "1"
-let g:jedi#show_call_signatures_delay = 0
-let g:jedi#use_tabs_not_buffers = 0
-let g:jedi#show_call_signatures_modes = 'i'  " ni = also in normal mode xxx
-let g:jedi#enable_speed_debugging=0
+" word movement
+imap <S-Left> <Esc>bi
+nmap <S-Left> b
+imap <S-Right> <Esc><Right>wi
+nmap <S-Right> w
 
-"Start of Vim-plug manager
-call plug#begin()
-	Plug 'tpope/vim-vinegar'
-	Plug 'ctrlpvim/ctrlp.vim'
-	Plug 'scrooloose/nerdtree'
-	Plug 'sirver/ultisnips'
-	Plug 'prettier/vim-prettier'
-	Plug 'tobyS/vmustache' 							"Dependency needed for tobyS/pdv.
-	Plug 'tobyS/pdv'
-	Plug 'honza/vim-snippets'
-	Plug 'tpope/vim-surround'
-	Plug 'jiangmiao/auto-pairs'
-	Plug 'davidhalter/jedi-vim'
-	Plug 'scrooloose/syntastic'
-	Plug 'nvie/vim-flake8'
-	Plug 'roxma/nvim-yarp'  						"dependency of ncm2
-	Plug 'ncm2/ncm2' 							"awesome autocomplete plugin
-	Plug 'HansPinckaers/ncm2-jedi' 						"fast python completion (use ncm2 if you want type info or snippet support)
-	Plug 'ncm2/ncm2-bufword' 						"buffer keyword completion
-	Plug 'ncm2/ncm2-path'  							"filepath completion
-call plug#end()
-"End Vim-plug manager
+" indent/unindent with tab/shift-tab
+nmap <Tab> >>
+nmap <S-tab> <<
+imap <S-Tab> <Esc><<i
+vmap <Tab> >gv
+vmap <S-Tab> <gv
+
+" mouse
+set mouse=a
+let g:is_mouse_enabled = 1
+noremap <silent> <Leader>m :call ToggleMouse()<CR>
+function ToggleMouse()
+    if g:is_mouse_enabled == 1
+        echo "Mouse OFF"
+        set mouse=
+        let g:is_mouse_enabled = 0
+    else
+        echo "Mouse ON"
+        set mouse=a
+        let g:is_mouse_enabled = 1
+    endif
+endfunction
+
+" color scheme
+syntax on
+colorscheme onedark
+filetype on
+filetype plugin indent on
+
+" lightline
+set noshowmode
+let g:lightline = { 'colorscheme': 'onedark' }
+
+" code folding
+set foldmethod=indent
+set foldlevel=99
+
+" wrap toggle
+setlocal nowrap
+noremap <silent> <Leader>w :call ToggleWrap()<CR>
+function ToggleWrap()
+    if &wrap
+        echo "Wrap OFF"
+        setlocal nowrap
+        set virtualedit=all
+        silent! nunmap <buffer> <Up>
+        silent! nunmap <buffer> <Down>
+        silent! nunmap <buffer> <Home>
+        silent! nunmap <buffer> <End>
+        silent! iunmap <buffer> <Up>
+        silent! iunmap <buffer> <Down>
+        silent! iunmap <buffer> <Home>
+        silent! iunmap <buffer> <End>
+    else
+        echo "Wrap ON"
+        setlocal wrap linebreak nolist
+        set virtualedit=
+        setlocal display+=lastline
+        noremap  <buffer> <silent> <Up>   gk
+        noremap  <buffer> <silent> <Down> gj
+        noremap  <buffer> <silent> <Home> g<Home>
+        noremap  <buffer> <silent> <End>  g<End>
+        inoremap <buffer> <silent> <Up>   <C-o>gk
+        inoremap <buffer> <silent> <Down> <C-o>gj
+        inoremap <buffer> <silent> <Home> <C-o>g<Home>
+        inoremap <buffer> <silent> <End>  <C-o>g<End>
+    endif
+endfunction
+
+" move through split windows
+nmap <leader><Up> :wincmd k<CR>
+nmap <leader><Down> :wincmd j<CR>
+nmap <leader><Left> :wincmd h<CR>
+nmap <leader><Right> :wincmd l<CR>
+
+" move through buffers
+nmap <leader>[ :bp!<CR>
+nmap <leader>] :bn!<CR>
+nmap <leader>x :bd<CR>
+
+" restore place in file from previous session
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" file browser
+let NERDTreeIgnore = ['\.pyc$', '__pycache__']
+let NERDTreeMinimalUI = 1
+let g:nerdtree_open = 0
+map <leader>n :call NERDTreeToggle()<CR>
+function NERDTreeToggle()
+    NERDTreeTabsToggle
+    if g:nerdtree_open == 1
+        let g:nerdtree_open = 0
+    else
+        let g:nerdtree_open = 1
+        wincmd p
+    endif
+endfunction
+
+function! StartUp()
+    if 0 == argc()
+        NERDTree
+    end
+endfunction
+autocmd VimEnter * call StartUp()
+
+" ale
+map <C-e> <Plug>(ale_next_wrap)
+map <C-r> <Plug>(ale_previous_wrap)
+
+" tags
+map <leader>t :TagbarToggle<CR>
+
+" copy, cut and paste
+vmap <C-c> "+y
+vmap <C-x> "+c
+vmap <C-v> c<ESC>"+p
+imap <C-v> <ESC>"+pa
+
+" disable autoindent when pasting text
+" source: https://coderwall.com/p/if9mda/automatically-set-paste-mode-in-vim-when-pasting-in-insert-mode
+let &t_SI .= "\<Esc>[?2004h"
+let &t_EI .= "\<Esc>[?2004l"
+
+function! XTermPasteBegin()
+    set pastetoggle=<Esc>[201~
+    set paste
+    return ""
+endfunction
+
+inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
+
+
+" Tamaño por defecto del terminal
+set termwinsize=10x0
+map <leader>te :belowright terminal<CR>
